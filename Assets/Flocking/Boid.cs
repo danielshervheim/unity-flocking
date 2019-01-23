@@ -183,6 +183,7 @@ public class Boid : MonoBehaviour {
 			force = -position;
 			force = Vector3.Normalize(force);
 			force = force * flock.maxVelocity;
+			force = force - velocity;
 			force = Vector3.ClampMagnitude(force, flock.maxAcceleration);
 
 			// strengthen the force as the boid gets farther out, to encourage return

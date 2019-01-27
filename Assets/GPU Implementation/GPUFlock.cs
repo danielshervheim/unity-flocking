@@ -93,17 +93,20 @@ public class GPUFlock : MonoBehaviour {
 		compute.SetBuffer(computeKernel, "boidBuffer", boidBuffer);
 		material.SetBuffer("boidBuffer", boidBuffer);
 
-		// initialize the cached variables
-		cachedBoundaryRadius = boundaryRadius;
-		cachedMaxVelocity = maxVelocity;
-		cachedMaxSteeringForce = maxSteeringForce;
-		cachedSeperationDistance = seperationDistance;
-		cachedNeighborDistance = neighborDistance;
-		cachedFieldOfView = fieldOfView;
-		cachedSeperationScale = seperationScale;
-		cachedAlignmentScale = alignmentScale;
-		cachedCohesionScale = cohesionScale;
-		cachedBoundaryScale = boundaryScale;
+		// set the count variable in compute shader
+		compute.SetInt("count", count);
+
+		// initialize the cached variables (-1 to ensure they are not the same as their originals and thus will trigger an update on the first frame)
+		cachedBoundaryRadius = boundaryRadius - 1;
+		cachedMaxVelocity = maxVelocity - 1;
+		cachedMaxSteeringForce = maxSteeringForce - 1;
+		cachedSeperationDistance = seperationDistance - 1;
+		cachedNeighborDistance = neighborDistance - 1;
+		cachedFieldOfView = fieldOfView - 1;
+		cachedSeperationScale = seperationScale - 1;
+		cachedAlignmentScale = alignmentScale - 1;
+		cachedCohesionScale = cohesionScale - 1;
+		cachedBoundaryScale = boundaryScale - 1;
 
 		// warmup shader
 		Shader.WarmupAllShaders();
@@ -164,9 +167,8 @@ public class GPUFlock : MonoBehaviour {
 
 		// dispatch compute shader
 		compute.Dispatch(computeKernel, count, 1, 1);
-	}
 
-	void LateUpdate () {  // void OnRenderObject () {
+		// render
 		material.SetPass(0);
 		Graphics.DrawMeshInstancedIndirect(mesh, submeshIndex, material,
 			new Bounds(transform.position, Vector3.one * 2f * boundaryRadius), argsBuffer);

@@ -1,6 +1,8 @@
 ﻿// Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel CSMain
 
+#include "boidUtilities.cginc"
+
 // Boid struct
 struct Boid {
 	float3 position;
@@ -11,12 +13,99 @@ struct Boid {
 // Boid buffer shared with surface shader.
 RWStructuredBuffer<Boid> boidBuffer;
 
+// the variables
+uint count;
+float boundaryRadius;
+float maxVelocity;
+float maxSteeringForce;
+float seperationDistance;
+float neighborDistance;
+float fieldOfView;
+float seperationScale;
+float alignmentScale;
+float cohesionScale;
+float boundaryScale;
+
 [numthreads(1, 1, 1)]
 void CSMain (uint3 id : SV_DispatchThreadID) {
-	/* float3 test = float3(0.0, 0.0, 0.0);
-	for (int i = 0; i < 100000; i++) {
-		test += test * test;
+	
+	// SEPERATION, ALIGNMENT, COHESION FORCE
+	float3 seperation = float3(0.0, 0.0, 0.0);
+	float3 alignment = float3(0.0, 0.0, 0.0);
+	float3 cohesion = float3(0.0, 0.0, 0.0);
+	float3 centerOfMass = float3(0.0, 0.0, 0.0);
+
+	float neighbors = 0.0;
+
+	// todo: spacial data structure to avoid looping through all n boids just to find nearest neighbors
+	for (uint i = 0; i < count; i++) {
+		float distance = length(boidBuffer[id.x].position - boidBuffer[i].position);
+		float angle = angleBetween(boidBuffer[id.x].velocity, boidBuffer[i].position - boidBuffer[id.x].position);
+
+		if (distance > 0.0 && distance <= neighborDistance && angle < fieldOfView/2.0) {
+			// seperation
+			float3 neighborDir = boidBuffer[id.x].position - boidBuffer[i].position;
+			float neighborDist = length(neighborDir);
+			neighborDir = normalize(neighborDir) / (neighborDist * neighborDist);
+			if (neighborDist < seperationDistance) {
+				seperation = seperation + neighborDir;
+			}
+			
+			// alignment
+			alignment = alignment + boidBuffer[i].velocity;
+
+			// cohesion
+			centerOfMass += boidBuffer[i].position;
+
+			// increase neighbor count
+			neighbors = neighbors + 1;
+		}
 	}
-	test *= 0.0; */
-	boidBuffer[id.x].position += boidBuffer[id.x].velocity;
+
+	if (neighbors > 0.0) {
+		seperation = setMagnitude(seperation, maxVelocity);
+		seperation = seperation - boidBuffer[id.x].velocity;
+		seperation = clampMagnitude(seperation, maxSteeringForce);
+		
+		alignment = setMagnitude(alignment, maxVelocity);
+		alignment = alignment - boidBuffer[id.x].velocity;
+		alignment = clampMagnitude(alignment, maxSteeringForce);
+	
+		centerOfMass = centerOfMass / neighbors;
+		cohesion = centerOfMass - boidBuffer[id.x].position;
+		cohesion = setMagnitude(cohesion, maxVelocity);
+		cohesion = cohesion - boidBuffer[id.x].velocity;
+		cohesion = clampMagnitude(cohesion, maxSteeringForce);
+	}
+
+	// BOUNDARY FORCE
+	float3 boundary = float3(0.0, 0.0, 0.0);
+	
+	float distance = length(boidBuffer[id.x].position - float3(0.0, 0.0, 0.0));
+	if (distance > boundaryRadius) {
+		boundary = -boidBuffer[id.x].position;
+		boundary = setMagnitude(boundary, maxVelocity);
+		boundary = boundary - boidBuffer[id.x].velocity;
+		boundary = clampMagnitude(boundary, maxSteeringForce);
+
+		// scale by distance, i.e. the further out you go, the strong the return force is
+		float3 weak = boundary * abs(distance / boundaryRadius);
+		float3 strong = boundary * abs(distance - boundaryRadius);
+		float t = abs((distance - boundaryRadius) / (boundaryRadius * boundaryRadius));
+		boundary = lerp(weak, strong, saturate(t));
+	}
+
+	// FORCE SCALE
+	seperation = seperation * seperationScale;
+	alignment = alignment * alignmentScale;
+	cohesion = cohesion * cohesionScale;
+	boundary = boundary * boundaryScale;
+
+	// UPDATE PARAMS
+	boidBuffer[id.x].acceleration = seperation + alignment + cohesion + boundary;
+
+	boidBuffer[id.x].velocity = boidBuffer[id.x].velocity + boidBuffer[id.x].acceleration;
+	boidBuffer[id.x].velocity = clampMagnitude(boidBuffer[id.x].velocity, maxVelocity);
+
+	boidBuffer[id.x].position = boidBuffer[id.x].position + boidBuffer[id.x].velocity;
 }

@@ -20,14 +20,16 @@
 		// Use shader model 5.0 target, which is required for instancing
 		// #pragma target 5.0
 
+		#include "boidUtilities.cginc"
+
 		half _Glossiness;
 		half _Metallic;
 		fixed4 _Color;
 
 		struct Input {
-            // half param : COLOR;
-			float3 worldPos;
-			float3 pos;
+			float3 position;
+			float3 velocity;
+			float3 acceleration;
 		};
 
 		#ifdef UNITY_PROCEDURAL_INSTANCING_ENABLED
@@ -43,8 +45,18 @@
        	void vert(inout appdata_full v, out Input data) {
        		UNITY_INITIALIZE_OUTPUT(Input, data);
             #ifdef UNITY_PROCEDURAL_INSTANCING_ENABLED
-       		data.pos = boidBuffer[unity_InstanceID].position;
-			v.vertex.xyz += boidBuffer[unity_InstanceID].position;
+            // set the frag parameters
+       		data.position = boidBuffer[unity_InstanceID].position;
+       		data.velocity = boidBuffer[unity_InstanceID].velocity;
+       		data.acceleration = boidBuffer[unity_InstanceID].acceleration;
+
+       		// todo: something is causing jerky rotations - must investigate
+       		// rotate to face direction
+       		float4 quat = rotationTo(boidBuffer[unity_InstanceID].velocity, float3(0.0, 0.0, 1.0));
+       		float3 positionRotated = rotateVector(quat, v.vertex.xyz);
+
+       		// offset vertex by boid position
+       		v.vertex.xyz = positionRotated + boidBuffer[unity_InstanceID].position;
 			#endif
 		}
 
@@ -56,7 +68,7 @@
 		void setup () { }
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
-			o.Albedo = _Color * saturate(IN.pos.y);
+			o.Albedo = float3(1,1,1);  // lerp(float3(0,0,0), float3(1,1,1), length(IN.velocity)/1.75);
 			o.Metallic = _Metallic;
 			o.Smoothness = _Glossiness;
 		}

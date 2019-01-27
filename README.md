@@ -1,26 +1,21 @@
 # Flocking in Unity
-A Unity implementation of Craig Reynolds famous boid literature.
+A Unity implementation of Craig Reynold's boids.
 
 ![screenshot](https://i.imgur.com/CaDNBkm.png)
 
-### This readme is a WIP!
+There are 2 versions, a CPU version and a GPU version.
 
-The basic CPU implementation is done. It features the 3 rules described in Reynolds original literature (seperation, alignment, cohesion) as well as a repellant force to keep the boids contrained within a radius.
+Both versions feature the rules described in Boids original paper (seperation, cohesion, alignment), as well as a boundary force to keep them within a specified area.
 
-To see the flock in action, just load up the `FlockScene` and press the play button. Additionally, there are parameters you can change to alter the behavior of the flock.
+Both are naive (i.e. O(N^2)) implementations. On my computer, the CPU version can handle **150** or so boids before slowing down, while the GPU version can handle about **5000**.
 
-The **Simulation Settings** should not be modified during runtime.
+The GPU version requires a graphics card that supports Compute shaders and GPU instancing in Unity.
 
-The **Boid Settings** and **Force Multipliers** can be modified freely at runtime.
+The CPU version also includes a visualization script to visualize some of the parameters of the boids (its neighbors, the forces acting on it, and its path over time).
 
-Finally, there is also an included script to visualize (in the editor window, not the play view) the forces acting on the boids, as well as their neighbor relations, and paths over time.
+## Todo
 
-![options](https://i.imgur.com/uDXdKGe.png)
-
-## todo
-
-- Write readme! :)
-- Make a video or gif demo of a flock in action and add to readme.
-- Add predator/prey boid types.
-- Add obstacles / enviroment detection.
-- GPU / Compute shader version. Perhaps particle system (?).
+- Make a gif or video demonstrating the flock in action.
+- Improve GPU version by some sort of spatial data structure to reduce neighbor lookup time.
+- Add obstacle / enviroment detection.
+- Add predator / prey boid types.

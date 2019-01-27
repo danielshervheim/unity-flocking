@@ -115,22 +115,13 @@ public class Boid : MonoBehaviour {
 			force += neighborDir;
 		}
 
-		// set the magnitude to max velocity
+		// we implement reynolds "force = desired velocity - current velocity"
 		force = Vector3.Normalize(force);
 		force = force * flock.maxVelocity;
-
-		// subtract current velocity to calculate change in accel.
 		force = force - velocity;
-
-		// clamp to max accel. force
-		force = Vector3.ClampMagnitude(force, flock.maxAcceleration);
+		force = Vector3.ClampMagnitude(force, flock.maxSteeringForce);
 
 		return force;
-
-		/* In all of the rules, we calculate the acceleration (dv) rather than
-		the velocity (v) as updating the velocity directly produces non-fluid,
-		"jerky" movement. Calculating these forces as an acceleration allows for
-		smoother direction changes. Hence f=clamp(f-v, maxAccel) rather than just f as v. */
 	}
 
 
@@ -146,7 +137,7 @@ public class Boid : MonoBehaviour {
 		force = Vector3.Normalize(force);
 		force = force * flock.maxVelocity;
 		force = force - velocity;
-		force = Vector3.ClampMagnitude(force, flock.maxAcceleration);
+		force = Vector3.ClampMagnitude(force, flock.maxSteeringForce);
 
 		return force;
 	}
@@ -166,7 +157,7 @@ public class Boid : MonoBehaviour {
 		force = Vector3.Normalize(force);
 		force = force * flock.maxVelocity;
 		force = force - velocity;
-		force = Vector3.ClampMagnitude(force, flock.maxAcceleration);
+		force = Vector3.ClampMagnitude(force, flock.maxSteeringForce);
 
 		return force;
 	}
@@ -184,7 +175,7 @@ public class Boid : MonoBehaviour {
 			force = Vector3.Normalize(force);
 			force = force * flock.maxVelocity;
 			force = force - velocity;
-			force = Vector3.ClampMagnitude(force, flock.maxAcceleration);
+			force = Vector3.ClampMagnitude(force, flock.maxSteeringForce);
 
 			// strengthen the force as the boid gets farther out, to encourage return
 			Vector3 weak = force * Mathf.Abs(dist / flock.boundaryRadius);

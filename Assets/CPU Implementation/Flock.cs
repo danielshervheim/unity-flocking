@@ -12,7 +12,7 @@ public class Flock : MonoBehaviour {
 
 	[Header("Boid Settings")]
 	public float maxVelocity = 1.75f;
-	public float maxAcceleration = 0.03f;
+	public float maxSteeringForce = 0.03f;
 	public float seperationDistance = 35.0f;
 	public float neighborDistance = 50.0f;
 	[Range(0f, 360f)]

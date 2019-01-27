@@ -60,7 +60,7 @@ public class Visualization : MonoBehaviour {
 		if (trailType != TrailType.NONE) {
 			Color color = trailColor;
 			if (trailContent == TrailContent.ACCELERATION) {
-				color = Color.Lerp(Color.black, trailColor, Mathf.Clamp(boids[i].acceleration.magnitude / flock.maxAcceleration, 0f, 1f));
+				color = Color.Lerp(Color.black, trailColor, Mathf.Clamp(boids[i].acceleration.magnitude / flock.maxSteeringForce, 0f, 1f));
 			}
 			else if (trailContent == TrailContent.VELOCITY) {
 				color = Color.Lerp(Color.black, trailColor, Mathf.Clamp(boids[i].velocity.magnitude / flock.maxVelocity, 0f, 1f));

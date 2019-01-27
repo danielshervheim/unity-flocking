@@ -1,6 +1,7 @@
 ﻿// Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel CSMain
 
+#define THREAD_GROUPS 256
 #include "boidUtilities.cginc"
 
 // Boid struct
@@ -26,7 +27,7 @@ float alignmentScale;
 float cohesionScale;
 float boundaryScale;
 
-[numthreads(64, 1, 1)]
+[numthreads(THREAD_GROUPS, 1, 1)]
 void CSMain (uint3 id : SV_DispatchThreadID) {
 	
 	// SEPERATION, ALIGNMENT, COHESION FORCE

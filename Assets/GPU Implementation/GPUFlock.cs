@@ -12,6 +12,9 @@ public class GPUFlock : MonoBehaviour {
 
 	private const int BOID_SIZE = 36;  // 3*3*sizeof(float)
 
+	// this must also be changed in boidCompute.compute if you wish to change it.
+	private const int THREAD_GROUPS = 256;
+
 
 
 	[Header("Boid Assets")]
@@ -167,7 +170,8 @@ public class GPUFlock : MonoBehaviour {
 
 		// dispatch compute shader
 		// due to precision lost in float->int division, we add one more threadgroup to be sure to cover all boids.
-		compute.Dispatch(computeKernel, count/64 + 1, 1, 1);
+
+		compute.Dispatch(computeKernel, count/THREAD_GROUPS + 1, 1, 1);
 
 		// render
 		material.SetPass(0);

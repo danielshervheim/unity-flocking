@@ -15,6 +15,7 @@ The CPU version also includes a visualization script to visualize some of the pa
 
 ## Todo
 
+- Improve mesh rotation stability in `boidShader.shader`.
 - Make a gif or video demonstrating the flock in action.
 - Add obstacle / enviroment detection.
 - Add predator / prey boid types.

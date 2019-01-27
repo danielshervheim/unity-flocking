@@ -26,7 +26,7 @@ float alignmentScale;
 float cohesionScale;
 float boundaryScale;
 
-[numthreads(1, 1, 1)]
+[numthreads(64, 1, 1)]
 void CSMain (uint3 id : SV_DispatchThreadID) {
 	
 	// SEPERATION, ALIGNMENT, COHESION FORCE
@@ -37,7 +37,6 @@ void CSMain (uint3 id : SV_DispatchThreadID) {
 
 	float neighbors = 0.0;
 
-	// todo: spacial data structure to avoid looping through all n boids just to find nearest neighbors
 	for (uint i = 0; i < count; i++) {
 		float distance = length(boidBuffer[id.x].position - boidBuffer[i].position);
 		float angle = angleBetween(boidBuffer[id.x].velocity, boidBuffer[i].position - boidBuffer[id.x].position);

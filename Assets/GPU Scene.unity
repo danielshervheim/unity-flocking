@@ -274,9 +274,9 @@ MonoBehaviour:
   submeshIndex: 0
   material: {fileID: 2100000, guid: 8983b6db80328cb47b47e6e594444b17, type: 2}
   compute: {fileID: 7200000, guid: 5b62a64fb05d82140a6c230cb09779df, type: 3}
-  count: 3500
-  boundaryRadius: 200
-  spawnRadius: 50
+  count: 18000
+  boundaryRadius: 500
+  spawnRadius: 250
   maxVelocity: 1.75
   maxSteeringForce: 0.03
   seperationDistance: 35

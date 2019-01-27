@@ -22,7 +22,7 @@ public class GPUFlock : MonoBehaviour {
 	private int computeKernel;
 
 	[Header("Simulation Settings")]
-	public int count = 100000;
+	public int count = 5000;
 	public float boundaryRadius = 1000f;
 	public float spawnRadius = 100f;
 
@@ -166,7 +166,8 @@ public class GPUFlock : MonoBehaviour {
 		}
 
 		// dispatch compute shader
-		compute.Dispatch(computeKernel, count, 1, 1);
+		// due to precision lost in float->int division, we add one more threadgroup to be sure to cover all boids.
+		compute.Dispatch(computeKernel, count/64 + 1, 1, 1);
 
 		// render
 		material.SetPass(0);

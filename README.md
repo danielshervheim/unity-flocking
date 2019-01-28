@@ -1,7 +1,7 @@
 # Flocking in Unity
 A Unity implementation of Craig Reynold's boids.
 
-![gif](https://media.giphy.com/media/jnUMgg3GFzhwUxxwfg/giphy.gif)
+[![gif](https://media.giphy.com/media/jnUMgg3GFzhwUxxwfg/giphy.gif)](https://youtu.be/JlhW6CCkrhY "Flocking in Unity")
 
 *20,000 boids simulated entirely on the GPU, running at 60 fps [(on Youtube)](https://youtu.be/JlhW6CCkrhY).*
 

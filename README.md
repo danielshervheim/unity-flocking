@@ -11,7 +11,7 @@ There are 2 versions, a CPU version and a GPU version.
 
 Both versions feature the rules described in Reynold's original paper (seperation, cohesion, alignment), as well as a boundary force to keep them within a specified area.
 
-Both are naive (i.e. O(N^2)) implementations. On my computer, the CPU version can handle **150** or so boids before slowing down, while the GPU version can handle about **20,000**.
+Both are naive (i.e. O(N<sup>2</sup>)) implementations. On my computer, the CPU version can handle **150** or so boids before slowing down, while the GPU version can handle about **20,000**.
 
 The GPU version requires a graphics card that supports Compute shaders and GPU instancing in Unity.
 

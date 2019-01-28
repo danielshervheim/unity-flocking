@@ -1,7 +1,8 @@
 # Flocking in Unity
 A Unity implementation of Craig Reynold's boids.
 
-![screenshot](https://i.imgur.com/CaDNBkm.png)
+[![IMAGE ALT TEXT](https://imgur.com/DZMU9SJ.gif)](https://youtu.be/JlhW6CCkrhY "Flocking in Unity")
+*20,000 boids simulated entirely on the GPU, running at 60 fps [(on Youtube)](https://youtu.be/JlhW6CCkrhY).*
 
 There are 2 versions, a CPU version and a GPU version.
 
@@ -15,7 +16,6 @@ The CPU version also includes a visualization script to visualize some of the pa
 
 ## Todo
 
-- Make a gif or video demonstrating the flock in action.
 - Implement fish vertex animation and bird wing vertex animation.
 - Add obstacle / enviroment detection.
 - Add predator / prey boid types.

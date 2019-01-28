@@ -50,19 +50,14 @@
        		data.velocity = boidBuffer[unity_InstanceID].velocity;
        		data.acceleration = boidBuffer[unity_InstanceID].acceleration;
 
-       		// todo: something is causing jerky rotations - must investigate
-       		// rotate to face direction
-       		float4 quat = rotationTo(boidBuffer[unity_InstanceID].velocity, float3(0.0, 0.0, 1.0));
-       		float3 positionRotated = rotateVector(quat, v.vertex.xyz);
-
-       		// offset vertex by boid position
+       		// rotate mesh to face velocity vector (so they look where they are going).
+       		float4 quat = lookRotation(boidBuffer[unity_InstanceID].velocity, float3(0.0, 1.0, 0.0));
+       		float3 positionRotated = rotateVector(v.vertex.xyz, quat);
+       		
+       		// offset mesh by position calculated from boid sim.
        		v.vertex.xyz = positionRotated + boidBuffer[unity_InstanceID].position;
 			#endif
 		}
-
-		//UNITY_INSTANCING_BUFFER_START(Props)
-			// put more per-instance properties here
-		//UNITY_INSTANCING_BUFFER_END(Props)
 
 		// required for DrawMeshInstancedIndirect(). Don't know why, but them's the ropes.
 		void setup () { }
@@ -72,7 +67,9 @@
 			o.Metallic = _Metallic;
 			o.Smoothness = _Glossiness;
 		}
+
 		ENDCG
 	}
+	
 	FallBack "Diffuse"
 }

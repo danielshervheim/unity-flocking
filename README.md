@@ -5,6 +5,8 @@ A Unity implementation of Craig Reynold's boids.
 
 *20,000 boids simulated entirely on the GPU, running at 60 fps [(on Youtube)](https://youtu.be/JlhW6CCkrhY).*
 
+---
+
 There are 2 versions, a CPU version and a GPU version.
 
 Both versions feature the rules described in Reynold's original paper (seperation, cohesion, alignment), as well as a boundary force to keep them within a specified area.
